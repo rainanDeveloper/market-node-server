@@ -1,0 +1,12 @@
+{
+  "name": "market-node-server",
+  "version": "0.0.0",
+  "description": "Servidor de sistema erp",
+  "main": "index.js",
+  "repository": "https://github.com/rainanDeveloper/market-node-server.git",
+  "author": "Rainan Miranda de Jesus <jesus.rainan@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

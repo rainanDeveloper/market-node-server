@@ -1,5 +1,5 @@
 {
-  "name": "market-node-server",
+  "name": "bluetools-node-server",
   "version": "0.0.0",
   "description": "Servidor de sistema erp",
   "main": "index.js",

@@ -1,13 +1,12 @@
-const express	= require('express')
+const express   = require('express');
 const config	= require('./../config.json')
 
+const routes	= require('./routes')
 
 const server 	= express()
 
 
-server.get('/', (request, response)=>{
-	response.send("Olá, bem vindo!")
-})
+server.use(routes)
 
 if (server.listen(config.port)) {
 	console.log("Servidor rodando na porta " + config.port)

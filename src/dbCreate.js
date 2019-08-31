@@ -1,0 +1,1 @@
+const db	= require('./database/migrations/index.js')

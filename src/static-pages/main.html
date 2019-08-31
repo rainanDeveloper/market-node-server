@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Bluetools server</title>
+	<style type="text/css">
+		html, body {
+			background: #1f2030;
+			color: #ccc;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			width: 100vw;
+			font-size: 1.2em;
+			font-family: Arial, Helvetica Neue, Helvetica, sans-serif
+		}
+
+		div.info {
+			text-align: center;
+			width: 100%
+		}
+
+		h2.mainTitle {
+			font-size: 1.6em;
+			font-weight: normal;
+			margin-bottom: 50px;
+		}
+
+		h2.mainTitle span {
+			width: 0;
+			margin: 0;
+			padding: 0;
+			margin-right: -10px
+		}
+	</style>
+</head>
+<body>
+	<div class="info"></div>
+	<script type="text/javascript">
+		// Global variables
+
+		let titleTextAbsolute = "Bluetools erp Server"
+
+		// Element declarations
+
+		let infoDOMElement	= document.querySelector('div.info')
+		let TitleElement	= document.createElement('h2')
+		TitleElement.classList.add('mainTitle')
+		let serverInfoText	= document.createTextNode('Server running')
+
+		// function declarations
+
+		function render(mainElement, childElement) {
+			mainElement.innerHTML = ''
+			mainElement.appendChild(childElement)
+		}
+
+		function updateTextNodeLoader(textNode) {
+			if (!textNode.data.match(/\.{1}/g) || textNode.data.match(/\.{1}/g).length < 3) {
+				textNode.data = textNode.data + "."
+			}
+			else {
+				textNode.data = textNode.data.replace(/\.+/g, '')
+			}
+			return textNode
+		}
+
+
+		// Interval executions
+		let startWriter = 9
+		let i = startWriter
+		let t = 0;
+		textTitleModified = titleTextAbsolute.slice(0, i);
+		let spanCursor = document.createElement('span')
+		spanCursor.innerHTML='&vert;'
+		setInterval(function(){
+			if (i < titleTextAbsolute.length+1 && t%5 && t>8) {
+				if (Math.random() < 0.8) {
+					textTitleModified = titleTextAbsolute.slice(0, i)
+					i++
+				}
+			}
+			render(TitleElement, document.createTextNode(textTitleModified))
+			render(infoDOMElement, TitleElement)
+			infoDOMElement.appendChild(serverInfoText)
+
+			if (t%6 >= 3) {
+				TitleElement.appendChild(spanCursor)
+			}
+
+			if ((t%4) == 0) {
+				serverInfoText = updateTextNodeLoader(serverInfoText)
+			}
+			t++
+		}, 100)
+	</script>
+</body>
+</html>

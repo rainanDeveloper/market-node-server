@@ -1,5 +1,3 @@
-#!bin/bash node
-
 const hound	= require('hound')
 const fs	= require('fs')
 

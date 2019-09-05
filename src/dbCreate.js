@@ -1,4 +1,3 @@
-// const db	= require('./database/')
 const fs 			= require('fs')
 const mysql			= require('mysql')
 const config		= require('./databaseConfig.js')
@@ -21,9 +20,6 @@ function createDB(connection, sql) {
 }
 
 let dir = './database/migrations/'
-
-
-
 
 connection.connect((callback)=>{
 	if (callback) {

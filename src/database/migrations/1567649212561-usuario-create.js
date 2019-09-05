@@ -1,0 +1,1 @@
+module.exports = {"description":"Creation of usuario's table","sqlData":"CREATE TABLE IF NOT EXISTS usuario (usuario_id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (usuario_id))"}

@@ -1,5 +1,50 @@
 const hound	= require('hound')
 const fs	= require('fs')
+const mysql			= require('mysql')
+const config		= require('./../databaseConfig.js')
+
+function executeQuery(sql, result) {
+	connection	= mysql.createConnection(config)
+	connection.query(sql, (error, results)=>{
+		if (results) {
+			console.log(results)
+			result = results
+		}
+
+		if (error) {
+			console.log(error)
+			result = error
+		}
+
+		connection.end();
+	})
+}
+
+function compareDatabaseModel(table, sql, tableName){
+	connection	= mysql.createConnection(config)
+	connection.query(sql, (error, results)=>{
+		if (results) {
+			console.log(results)
+			result = results
+		}
+
+		if (error) {
+			console.log(error)
+			result = error
+		}
+
+		result.forEach((resultItem, index)=>{
+			if (resultItem.Field!=`${tableName}_id`) {
+				// Desenvolver a partir daqui
+				if (table.includes(resultItem.Field)){
+					console.log(`possui ${resultItem.Field}`)
+				}
+			}
+		})
+
+		connection.end();
+	})
+}
 
 dir = './../models'
 migrationDir = './migrations/'
@@ -12,44 +57,47 @@ watcher.on('create', (file, stats)=>{
 
 	let sql = `CREATE TABLE IF NOT EXISTS ${newTable} (${newTable}_id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY (${newTable}_id))`
 
-	let migrationObj = {
-		description: `Creation of ${newTable}'s table`,
-		sqlData: sql
-	}
+	if (executeQuery(connection, sql)){
 
-	migrationData = "module.exports = " + JSON.stringify(migrationObj)
-
-	let migrationFile = Date.now()+ '-' + newTable+'-create.js'
-
-	fs.writeFile(migrationDir+migrationFile, migrationData, (callback)=>{
-		if (callback) {
-			throw callback
+		let migrationObj = {
+			description: `Creation of ${newTable}'s table`,
+			sqlData: sql
 		}
 
-		console.log('Arquivo criado com sucesso: '+migrationFile)
-	})
+		migrationData = "module.exports = " + JSON.stringify(migrationObj)
+
+		let migrationFile = Date.now()+ '-' + newTable+'-create.js'
+
+		fs.writeFile(migrationDir+migrationFile, migrationData, (callback)=>{
+			if (callback) {
+				throw callback
+			}
+
+			console.log('Arquivo criado com sucesso: '+migrationFile)
+		})
+	}
 })
 
 watcher.on('change', (file, stats)=>{
 	let changedTable = ((file).replace(dir+'/', '')).replace(/\.json/g, '')
 
-	let sql = `` // Implementar modificação na mudança
+	// capturando campos no arquivo json
 
-	let migrationObj = {
-		description: `Modification of ${changedTable}'s table`,
-		sqlData: sql
-	}
+	console.log("Changed")
 
-	migrationData = "module.exports = " + JSON.stringify(migrationObj)
+	let modelObj	= require(file)
 
-	let migrationFile = Date.now()+ '-' + changedTable+'-change.js'
+	let nameFields	= Object.keys(modelObj)
 
-	fs.writeFile(migrationDir+migrationFile, migrationData, (callback)=>{
-		if (callback) {
-			throw callback
-		}
+	let fieldsProps	= Object.values(modelObj)
 
-		console.log('Arquivo criado com sucesso: '+migrationFile)
+
+	nameFields.forEach((field, index)=>{
+		var result=""
+
+		let sqlFields = `DESC ${changedTable};`
+
+		compareDatabaseModel(nameFields, sqlFields, changedTable)
 	})
 })
 
@@ -58,20 +106,23 @@ watcher.on('delete', (file, stats)=>{
 
 	let sql = `DROP TABLE ${deletedTable}`
 
-	let migrationObj = {
-		description: `Deletion of ${deletedTable}'s table`,
-		sqlData: sql
-	}
+	if (executeQuery(connection, sql)){
 
-	migrationData = "module.exports = " + JSON.stringify(migrationObj)
-
-	let migrationFile = Date.now()+ '-' + deletedTable+'-delete.js'
-
-	fs.writeFile(migrationDir+migrationFile, migrationData, (callback)=>{
-		if (callback) {
-			throw callback
+		let migrationObj = {
+			description: `Deletion of ${deletedTable}'s table`,
+			sqlData: sql
 		}
 
-		console.log('Arquivo criado com sucesso: '+migrationFile)
-	})
+		migrationData = "module.exports = " + JSON.stringify(migrationObj)
+
+		let migrationFile = Date.now()+ '-' + deletedTable+'-delete.js'
+
+		fs.writeFile(migrationDir+migrationFile, migrationData, (callback)=>{
+			if (callback) {
+				throw callback
+			}
+
+			console.log('Arquivo criado com sucesso: '+migrationFile)
+		})
+	}
 })
